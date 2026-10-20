@@ -1,0 +1,6 @@
+streamlit
+qdrant-client
+sentence-transformers
+rank-bm25
+google-genai
+numpy
