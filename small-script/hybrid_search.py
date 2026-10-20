@@ -8,6 +8,7 @@ import numpy as np
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
+from cloud_ingest import ensure_collection, get_qdrant_client
 
 
 # -------------------- CONFIGURATION --------------------
@@ -145,8 +146,8 @@ def _initialize():
     ]
     bm25 = BM25Okapi(tokenized_corpus)
 
-    model = SentenceTransformer(MODEL_NAME)
-    client = QdrantClient(path=str(QDRANT_PATH))
+    client = get_qdrant_client()
+    ensure_collection(client)
 
     available = {
         collection.name
@@ -154,11 +155,9 @@ def _initialize():
     }
 
     if COLLECTION_NAME not in available:
-        client.close()
         raise ValueError(
-            f"Qdrant collection '{COLLECTION_NAME}' does not exist. "
-            f"Available collections: {sorted(available)}"
-        )
+            f"Qdrant collection '{COLLECTION_NAME}' was not initialized."
+    )
 
     original_sections = {}
     for act_code, path in ACT_FILES.items():
