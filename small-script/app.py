@@ -131,7 +131,8 @@ if submitted:
             )
             st.stop()
 
-        st.divider()
+ 
+
         st.subheader("Legal explanation")
 
         with st.spinner("Generating explanation..."):
@@ -145,32 +146,33 @@ if submitted:
                 "Check your Gemini configuration and application logs."
             )
 
+        st.divider()
+
+        st.subheader("Retrieved legal provisions")
+
+        for result in results:
+            act_code = result.get("act_code", "Unknown Act")
+            section_number = result.get("section_number", "?")
+            section_title = result.get("section_title", "Untitled section")
+
+            with st.expander(
+                f"{act_code} §{section_number} — {section_title}",
+                expanded=False,
+            ):
+                st.write(result.get("text", "No section text available."))
+
+                start_page = result.get("start_page")
+                end_page = result.get("end_page")
+
+                if start_page is not None:
+                    page_text = f"Source PDF page: {start_page}"
+                    if end_page is not None and end_page != start_page:
+                        page_text += f"–{end_page}"
+                    st.caption(page_text)
+
     except Exception as exc:
         st.error("The search or explanation failed.")
         st.exception(exc)
-
-    st.subheader("Retrieved legal provisions")
-
-    for result in results:
-        act_code = result.get("act_code", "Unknown Act")
-        section_number = result.get("section_number", "?")
-        section_title = result.get("section_title", "Untitled section")
-
-        with st.expander(
-            f"{act_code} §{section_number} — {section_title}",
-            expanded=False,
-        ):
-            st.write(result.get("text", "No section text available."))
-
-            start_page = result.get("start_page")
-            end_page = result.get("end_page")
-
-            if start_page is not None:
-                page_text = f"Source PDF page: {start_page}"
-                if end_page is not None and end_page != start_page:
-                    page_text += f"–{end_page}"
-                st.caption(page_text)
-
 
 # -------------------- Footer --------------------
 

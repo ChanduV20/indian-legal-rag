@@ -169,7 +169,7 @@ def _initialize():
     _doc_by_id = doc_by_id
     _doc_by_section_and_chunk = doc_by_section_and_chunk
     _bm25 = bm25
-    _model = model
+    _model = SentenceTransformer(MODEL_NAME)
     _client = client
     _original_sections = original_sections
 
